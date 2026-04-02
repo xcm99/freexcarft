@@ -5,6 +5,9 @@ on:
     - cron: '5 */8 * * *'
   workflow_dispatch: # 手动触发按钮
 
+permissions:
+  contents: write
+
 jobs:
   renew:
     runs-on: ubuntu-latest
@@ -40,3 +43,14 @@ jobs:
             sleep $delay
             python renew.py
           fi
+
+      - name: Heartbeat commit
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git pull origin main || true
+          echo "Last run: $(date -u)" > heartbeat.txt
+          git add heartbeat.txt
+          git commit -m "heartbeat $(date -u)" || echo "No changes"
+          git push origin HEAD:main    
