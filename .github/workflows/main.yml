@@ -41,7 +41,7 @@ jobs:
             echo "⏰ 定时任务触发 (北京时间: $printdate)"
             echo "💤 随机等待 $delay 秒后开始..."
             sleep $delay
-            python renew.py
+            python main.py
           fi
 
       - name: Heartbeat commit
