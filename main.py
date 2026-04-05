@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 # ================= 核心配置 =================
 SERVER_ID = os.getenv("FXC_SERVER_ID")
-ACTION_ID = "40f53a98e53e936c81bbae1afe242f83ecba099143" 
+ACTION_ID = os.getenv("FXC_ACTION_ID")
 SUPABASE_URL = "https://aeilbxxjgrnnqmtwnesh.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlaWxieHhqZ3JubnFtdHduZXNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMTY4NjUsImV4cCI6MjA4Njg5Mjg2NX0.ZuGQzVsHX8nnvo1JFoBCOokEjaW-no-QKEe_yco7kUA"
 
@@ -49,8 +49,9 @@ def parse_time(time_str):
             return None
 
 def run_task():
-    if not EMAIL or not PASSWORD or not SERVER_ID:
-        print("❌ 错误: 未设置登录凭据或 SERVER_ID")
+    # 卫语句检查：确保三个核心变量都有值
+    if not EMAIL or not PASSWORD or not SERVER_ID or not ACTION_ID:
+        print("❌ 错误: 环境变量未设置完整 (检查 EMAIL, PASS, SERVER_ID 或 ACTION_ID)")
         return
 
     current_ua = random.choice(USER_AGENTS)
