@@ -31,23 +31,20 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: |
-          # 1. 将空格分隔的字符串转为数组
           IFS=' ' read -r -a acc_array <<< "$ACCOUNTS_DATA"
           echo "👥 检测到 ${#acc_array[@]} 个账号，准备串行处理..."
 
           for acc in "${acc_array[@]}"; do
-            # 2. 解析单个账号信息 (email:pass:sid)
+            
             IFS=':' read -r u p s <<< "$acc"
             
             echo "--------------------------------------"
             echo "🔄 正在切换至账号: $u"
-            
-            # 3. 动态导出环境变量给 Python 脚本读取
+                        
             export FXC_EMAIL="$u"
             export FXC_PASS="$p"
             export FXC_SERVER_ID="$s"
-            
-            # 4. 执行逻辑 (保留你原有的手动/定时判断)
+                        
             if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
               python main.py
             else
@@ -56,9 +53,8 @@ jobs:
               sleep $delay
               python main.py
             fi
-            
-            # 5. 账号间冷却：执行完一个账号后，额外随机休眠 30-60 秒规避风控
-            extra_sleep=$((30 + RANDOM % 31))
+                        
+            extra_sleep=$((10 + RANDOM % 21))
             echo "✅ $u 已处理，安全休眠 $extra_sleep 秒..."
             sleep $extra_sleep
           done
